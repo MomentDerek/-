@@ -180,11 +180,11 @@ void BST<T>::iterativePreorder() { //前序遍历的非递归实现
         travStack.push(p);          //将当前节点推出栈中
         while (!travStack.empty()) {
             p = travStack.pop();    //弹出刚刚推入栈的节点
-            visit(p);
+            visit(p);               //打印弹出的节点
             if (p->right != 0)
-                travStack.push(p->right);
-            if (p->left != 0)             // left child pushed after right
-                travStack.push(p->left); // to be on the top of the stack;
+                travStack.push(p->right);   //先将当前节点的右节点推入栈中
+            if (p->left != 0)             
+                travStack.push(p->left);    //再将左节点推入栈中，这样待会弹出来的就是左节点
         }
     }
 }
@@ -194,21 +194,21 @@ void BST<T>::iterativeInorder() {
     Stack<BSTNode<T>*> travStack;
     BSTNode<T>* p = root;
     while (p != 0) {
-        while (p != 0) {                 // stack the right child (if any)
-            if (p->right)                // and the node itself when going
-                travStack.push(p->right); // to the left;
-            travStack.push(p);
-            p = p->left;
+        while (p != 0) {                 //这个循环直到当前节点为空为止
+            if (p->right)                //如果当前节点有右节点就推入栈中
+                travStack.push(p->right);
+            travStack.push(p);          //将当前节点压入栈中
+            p = p->left;                //向左遍历
         }
-        p = travStack.pop();             // pop a node with no left child
-        while (!travStack.empty() && p->right == 0) { // visit it and all nodes
-            visit(p);                                 // with no right child;
+        p = travStack.pop();             //先弹出当前节点，此时完成第一次压栈
+        while (!travStack.empty() && p->right == 0) { //逐步弹出到有节点有右节点为止
+            visit(p);                                 //中途打印当前节点的值
             p = travStack.pop();
         }
-        visit(p);                        // visit also the first node with
-        if (!travStack.empty())          // a right child (if any);
-            p = travStack.pop();
-        else p = 0;
+        visit(p);                        //打印当前节点的值，此时当前节点有右节点，根据同级的第一个while循环，栈内还有该节点的右节点
+        if (!travStack.empty())          
+            p = travStack.pop();         //弹出右节点，然后继续以当前节点为根，重复while循环，向左遍历
+        else p = 0;                      //当前节点的左节点前面肯定是遍历过了，如果还没有右节点，意味着已经遍历到最右端的叶节点
     }
 }
 
